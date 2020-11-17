@@ -6,11 +6,16 @@
 	<h1> Login TO YOUR ACCOUNT</h1><br><br><hr>
 	<form action="" method="Post">
 		<p>{{form.hidden_tag()}}
+		<div class="form-group">
 		{{form.email.label}}
-		{{form.email(size=60,placeholder="Email")}}<br><br>
+		<p class="form-control-md">{{form.email(size=60,placeholder="Email")}}</p><br><br>
+		</div>
+		<div class="form-group">
 		{{form.password.label}}
-		{{form.password(size=60,placeholder="password")}}</p><br><br>
-		<p>{{form.submit()}}</p>
+		<p class="form-control-md">{{form.password(size=60,placeholder="password")}}</p><br><br>
+		</div>
+		<p class="btn btn-primary">{{form.submit()}}</p>
+		
 	</form>
 </div>
 	 
