@@ -10,13 +10,14 @@ import sys
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime
 PATH=os.getcwd()
-
+sess={}
+sess['name']=None
 with open('req.txt','r') as file:
     auth=file.read()
 
 app=Flask(__name__)
 app.config["SECRET_KEY"]='asdasd'
-app.config["SQLALCHEMY_DATABASE_URI"]=auth
+app.config["SQLALCHEMY_DATABASE_URI"]=auth  # psql used 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=True
 db = SQLAlchemy(app)
 login=LoginManager(app)
@@ -35,17 +36,21 @@ class Account(db.Model,UserMixin):
 
 @login.user_loader
 def validate(user):
-	return Account.query.get(int(user))
+        return Account.query.get(int(user))
 
-@app.route('/')
 @app.route('/<name>')
+@app.route('/')
 @login_required
-def index(name=None,mo:bool=False):
+def index(name=None):
+    
     if name!=None:
-        
-        return render_template('index.html',name=name)
+            return render_template('index.html',name=name) 
     else:
-        return render_template('index.html')
+            return render_template('index.html',name=sess['name'])
+   
+        
+
+  
 @app.route("/register",methods=["GET","POST"])
 def register():
 	form=Register()
@@ -62,29 +67,35 @@ def register():
 	return render_template("register.html",form=form)
 @app.route("/login",methods=["GET","POST"])
 def login():
-	form=Login()
-	n=None
-	if form.validate_on_submit():
-		D=Account.query.filter_by(email=form.email.data).first()
-		
-		if D:
-			n=D.username
-			if not check_password_hash(D.password,form.password.data):
-				data=False
-				session["EMAIL"]=form.email.data
-				
-				return redirect(url_for("change_password",user=session["EMAIL"]))
-			
-				
-		else:
-			return redirect(url_for("register"))
-			
-		
-		login_user(D,remember=form.remember_me.data)
-		
-		return redirect(url_for("index",name=n))
-		
-	return render_template("login.html",form=form)
+    if  current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form=Login()
+    if form.validate_on_submit():
+            D=Account.query.filter_by(email=form.email.data).first()
+            n=D.username
+            if D:
+                    if not check_password_hash(D.password,form.password.data):
+                            data=False
+                            sess["Email"]=form.email.data
+                            return redirect('index',user=sess['Email'])
+            else:
+                    return redirect(url_for('register'))
+            login_user(D,remember=form.remember_me.data)
+            sess['name']=n
+            return redirect(url_for('index',name=sess['name']))
+    return render_template('login.html',form=form)
+    #return render_template('login.html',form=form)
+
+                    
+    
+   
+
+@app.route("/logout")
+def logout():
+	logout_user()
+	sess['name']=None
+	return redirect(url_for("login"))
+
 
 @app.errorhandler(401)
 def error1(error):
