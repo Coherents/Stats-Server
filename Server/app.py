@@ -47,8 +47,7 @@ def register():
 		users=Account(username=form.username.data,email=form.email.data,password=generate_password_hash(form.password.data))
 		session["file"]=form.file.data.filename
 		try:
-			data=pd.read_csv(session["file"])
-			print(data)
+			print(session["file"])
 		except:
 			pass
 		db.session.add(users)
