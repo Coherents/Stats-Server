@@ -33,9 +33,8 @@ class Account(db.Model):
 
 
 @app.route('/')
-@app.route('/<name>/<mo>')
+@app.route('/<name>')
 def index(name=None,mo:bool=False):
-    session['pass']=mo
     if name!=None:
         
         return render_template('index.html',name=name)
@@ -47,6 +46,11 @@ def register():
 	if form.validate_on_submit():
 		users=Account(username=form.username.data,email=form.email.data,password=generate_password_hash(form.password.data))
 		session["file"]=form.file.data.filename
+		try:
+			data=pd.read_csv(session["file"])
+			print(data)
+		except:
+			pass
 		db.session.add(users)
 		db.session.commit()
 		return redirect (url_for("login"))
@@ -54,12 +58,12 @@ def register():
 @app.route("/login",methods=["GET","POST"])
 def login():
 	form=Login()
-	
+	n=None
 	if form.validate_on_submit():
 		D=Account.query.filter_by(email=form.email.data).first()
 		
 		if D:
-			
+			n=D.username
 			if not check_password_hash(D.password,form.password.data):
 				data=False
 				session["EMAIL"]=form.email.data
@@ -73,7 +77,7 @@ def login():
 		
 		
 		
-		return redirect(url_for("index"))
+		return redirect(url_for("index",name=n))
 		
 	return render_template("login.html",form=form)
 
