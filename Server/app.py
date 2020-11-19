@@ -111,7 +111,7 @@ def yolo(name=None):
                 return redirect(url_for('index'))
 
 @app.route('/qwert/<name>',methods=["GET","POST"])
-def fuck(name=None):
+def fancy(name=None):
         if name:
                 Item=request.form["item"]
                 L[name].append(Item)
