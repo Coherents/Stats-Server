@@ -1,5 +1,6 @@
 from flask import *
 from flask_login import LoginManager,current_user,login_required,login_user,logout_user,UserMixin
+from collections import defaultdict
 from forms import *
 from flask_migrate import Migrate
 from flask_sqlalchemy import *
@@ -14,7 +15,7 @@ sess={}
 sess['name']=None
 with open('req.txt','r') as file:
     auth=file.read()
-
+L={}
 app=Flask(__name__)
 app.config["SECRET_KEY"]='asdasd'
 app.config["SQLALCHEMY_DATABASE_URI"]=auth  # psql used 
@@ -36,6 +37,7 @@ class Account(db.Model,UserMixin):
 
 @login.user_loader
 def validate(user):
+        
         return Account.query.get(int(user))
 
 @app.route('/<name>')
@@ -87,8 +89,40 @@ def login():
     #return render_template('login.html',form=form)
 
                     
+@app.route('/read')
+def commercial():
+    return render_template('readData.html',List=L.keys(),D=L)
+@app.route('/hola',methods=["GET",'POST'])
+def post_route():
+     data=request.form["category_text"]
+     if data not in L.keys():
+            L[data]=[]
     
-   
+     print(L)
+     print(data)
+     return render_template('readData.html',List=L.keys(),D=L)
+
+
+@app.route('/yolo/<name>')
+def yolo(name=None):
+        if name:
+                return render_template('yolo.html',name=name)
+        else:
+                return redirect(url_for('index'))
+
+@app.route('/qwert/<name>',methods=["GET","POST"])
+def fuck(name=None):
+        if name:
+                Item=request.form["item"]
+                L[name].append(Item)
+                print(L)
+                return redirect(url_for('commercial',List=L.keys(),D=L))
+        else:
+                return redirect(url_for('index'))
+                    
+
+                
+             
 
 @app.route("/logout")
 def logout():
