@@ -11,8 +11,6 @@ import sys
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime
 import zipfile
-import shutil
-
 PATH=os.getcwd()
 sess={}
 sess['name']=None
@@ -126,10 +124,7 @@ def fancy(name=None):
 
 @app.route('/plots',methods=["GET","POST"])
 def download():
-      pass
-
-
-
+        pass
                         
                 
                
