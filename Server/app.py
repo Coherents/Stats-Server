@@ -10,6 +10,9 @@ import pymongo
 import sys
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime
+import zipfile
+import shutil
+
 PATH=os.getcwd()
 sess={}
 sess['name']=None
@@ -121,7 +124,15 @@ def fancy(name=None):
                 return redirect(url_for('index'))
                     
 
+@app.route('/plots',methods=["GET","POST"])
+def download():
+      pass
+
+
+
+                        
                 
+               
              
 
 @app.route("/logout")
@@ -136,4 +147,4 @@ def error1(error):
     return "<h1><center> Not Authorized</center></h1>"
 
 if __name__=='__main__':
-   app.run(debug=True)
+   app.run(debug=True,port=4000)
