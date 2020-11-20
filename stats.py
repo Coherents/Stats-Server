@@ -97,12 +97,32 @@ class Stats(object):
                 
                     
     @property
-    def Getting_plots(self):
+    def Getting_plots(self,roll_av_value=100):
         if not self.__read:
                     print('You first have to read the data')
                     sys.exit(1)
         Path='Server/dataFiles'
+        if 'Analysis' not in os.listdir('Server/dataFiles/'):
+                os.mkdir('Server/dataFiles/Analysis')
+        c=0
+        for l in self.data.columns:
+                fig=plt.figure(figsize=(12,12))
+                ax1 = plt.subplot2grid((7,1), (0,0), rowspan=5, colspan=1)
+                ax2 = plt.subplot2grid((7,1), (5,0), rowspan=1, colspan=1,sharex=ax1)
+                ax3=plt.subplot2grid((7,1),(6,0),rowspan=1,colspan=1,sharex=ax2)
+                self.data[l].plot(ax=ax1,use_index=True,figsize=(12,12))
+                self.data[l].rolling(window=roll_av_value).mean().plot(ax=ax1,use_index=True,figsize=(12,12),label='Mean')
+                self.data[l].rolling(window=roll_av_value).std().plot(ax=ax1,use_index=True,figsize=(12,12),label='STdev')
+                self.data['Volume'].rolling(window=roll_av_value).mean().plot(ax=ax2,use_index=True,figsize=(12,12),label='Volume_mean')
+                self.data['Volume'].rolling(window=roll_av_value).mean().plot(ax=ax3,use_index=True,figsize=(12,12),label='Volume_std')
+                plt.title(f'Moving Average analysis on {l}',size=18,loc='right')
+                ax1.legend(loc='best')
+                ax2.legend(loc='best')
+                ax3.legend(loc='best')
+                plt.savefig(f'Server/dataFiles/Analysis/ID{c}.png')
+                c+=1
         
+                
         print(self.data.iloc[:,1:])
         for i in self.data.columns:
                 fig=plt.figure(figsize=(12,12))
