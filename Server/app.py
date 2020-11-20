@@ -7,6 +7,15 @@ from flask_sqlalchemy import *
 import os
 import sqlite3
 import sys
+import inspect
+
+########
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(1,parentdir) 
+from stats import Stats
+#######
+
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime
 import zipfile
@@ -121,9 +130,15 @@ def fancy(name=None):
                 return redirect(url_for('index'))
                     
 
-@app.route('/plots',methods=["GET","POST"])
+@app.route('/download',methods=["GET","POST"])
 def download():
-        pass
+        G=Stats('tsla.csv')
+        G.Load_data()
+        G.Getting_plots
+        G.distribution
+        G.Outliers
+        G.Getting_description
+        return redirect(url_for('index',name=sess['name']))
                         
                 
                
