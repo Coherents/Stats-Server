@@ -138,7 +138,13 @@ def download():
         G.distribution
         G.Outliers
         G.Getting_description
-        return redirect(url_for('index',name=sess['name']))
+        ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
+        for r,d,f in os.walk('dataFiles/'):
+                for file in f:
+                        ziph.write(os.path.join(r,file))
+        ziph.close()
+                
+        return send_file('data.zip',as_attachment=True)
                         
                 
                
