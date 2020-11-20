@@ -43,8 +43,8 @@ class Stats(object):
     
     
     def Load_data(self,head_included=False):
-        if 'dataFiles' not in os.listdir(os.path.join(os.getcwd(),'Server')):
-            os.mkdir('Server/dataFiles')
+        if 'dataFiles' not in os.listdir(os.getcwd()):
+            os.mkdir('dataFiles')
         if not head_included:
             if not self.sep:
                 self.data=pd.read_csv(self.name,engine="python")
@@ -80,8 +80,9 @@ class Stats(object):
             for k in self.data.columns:
                     M[k]=[self.data[k].isnull().sum()]
             print(M)
+            self.data.dropna(inplace=True)
             temp=pd.DataFrame(M)
-            temp.to_csv('Server/dataFiles/Null.csv') 
+            temp.to_csv('dataFiles/Null.csv') 
             print(self.data)
     @property
     def Getting_description(self):
@@ -90,7 +91,7 @@ class Stats(object):
                 sys.exit(1)
         self.temp=self.data.describe()
         try:
-            self.temp.to_csv('Server/dataFiles/Desc.csv')
+            self.temp.to_csv('dataFiles/Desc.csv')
         except:
             raise('First you have to read a data')
     
@@ -101,9 +102,9 @@ class Stats(object):
         if not self.__read:
                     print('You first have to read the data')
                     sys.exit(1)
-        Path='Server/dataFiles'
-        if 'Analysis' not in os.listdir('Server/dataFiles/'):
-                os.mkdir('Server/dataFiles/Analysis')
+        Path='dataFiles'
+        if 'Analysis' not in os.listdir('dataFiles'):
+                os.mkdir('dataFiles/Analysis')
         c=0
         for l in self.data.columns:
                 fig=plt.figure(figsize=(12,12))
@@ -119,7 +120,7 @@ class Stats(object):
                 ax1.legend(loc='best')
                 ax2.legend(loc='best')
                 ax3.legend(loc='best')
-                plt.savefig(f'Server/dataFiles/Analysis/ID{c}.png')
+                plt.savefig(f'dataFiles/Analysis/ID{c}.png')
                 c+=1
         
                 
@@ -127,20 +128,20 @@ class Stats(object):
         for i in self.data.columns:
                 fig=plt.figure(figsize=(12,12))
                 self.data[i].plot()
-                plt.savefig(f'Server/dataFiles/{i}.png')
-        plt.savefig('Server/dataFiles/simple.jpg')
-        if  "Histograms" not in os.listdir('Server/dataFiles'):
-                    os.mkdir('Server/dataFiles/Histograms')
+                plt.savefig(f'dataFiles/{i}.png')
+        plt.savefig('dataFiles/simple.jpg')
+        if  "Histograms" not in os.listdir('dataFiles'):
+                    os.mkdir('dataFiles/Histograms')
         
         c=0
         for i in self.data.columns[1:]:
                 fig=plt.figure(figsize=(12,12))
                 plt.hist(self.data[i])
                 plt.title(i,size=14)
-                plt.savefig(f'Server/dataFiles/Histograms/Histograms_{c}.jpg')
+                plt.savefig(f'dataFiles/Histograms/Histograms_{c}.jpg')
                 c+=1
         sns.pairplot(self.data[1:])
-        plt.savefig('Server/dataFiles/PairPLot_main.png')
+        plt.savefig('dataFiles/PairPLot_main.png')
         
         
         
@@ -151,28 +152,28 @@ class Stats(object):
     def distribution(self,histo=True,rug=False):
         # distplots
         
-        if 'Distribution' not in os.listdir('Server/dataFiles'):
-            os.mkdir('Server/dataFiles/Distribution')
+        if 'Distribution' not in os.listdir('dataFiles'):
+            os.mkdir('dataFiles/Distribution')
         c=0
         for k in self.data.columns[1:]:
                 fig=plt.figure(figsize=(12,12))
                 sns.distplot(self.data[k].values,hist=histo,rug=rug)
                 plt.title(k,size=17)
-                plt.savefig(f'Server/dataFiles/Distribution/Distributionplot_{str(c)}.png')
+                plt.savefig(f'dataFiles/Distribution/Distributionplot_{str(c)}.png')
                 c+=1
         self.corr=self.data[1:].corr()
         sns.heatmap(self.corr)
-        plt.savefig('Server/dataFiles/Heatmap.png')
+        plt.savefig('dataFiles/Heatmap.png')
             
     @property
     def Outliers(self):
-        if 'Outliers' not in os.listdir('Server/dataFiles'):
-            os.mkdir('Server/dataFiles/Outliers')
+        if 'Outliers' not in os.listdir('dataFiles'):
+            os.mkdir('dataFiles/Outliers')
         c=0
         for k in self.data.columns[1:]:
                 fig=plt.figure(c+1,figsize=(12,12))
                 sns.boxplot(self.data[k])
-                plt.savefig(f'Server/dataFiles/Outliers/box_{str(c)}.png')
+                plt.savefig(f'dataFiles/Outliers/box_{str(c)}.png')
                 c+=1
     
     def Laura(self):
