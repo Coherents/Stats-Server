@@ -6,6 +6,8 @@ import os
 import sys
 import argparse
 import seaborn as sns
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+
 
 
 class Stats(object):
@@ -14,10 +16,15 @@ class Stats(object):
         self.type1=type
         self.sep=req_sep
         self.__data=None
+        self.__read:bool=False
+    
+    
     def Load_data(self,head_included=False):
+        if 'dataFiles' not in os.listdir(os.getcwd()):
+            os.mkdir('dataFiles')
         if not head_included:
             if not self.sep:
-                self.data=pd.read_csv(self.name,engine="python",header=None)
+                self.data=pd.read_csv(self.name,engine="python")
             else:
                self.data=pd.read_csv(self.name,engine="python",header=None)
         else:
@@ -26,19 +33,28 @@ class Stats(object):
             else:
                 self.data=pd.read_csv(self.name,engine="python")
         print(self.data)
+        self.__read=True
     @property
-    def Getting_info(self):
+    def Getting_description(self):
+        if not self.__read:
+                raise('You First have to read the data before analysis')
         self.temp=self.data.describe()
-        self.temp.to_csv('Desc.csv')
-        
-    
+        try:
+            self.temp.to_csv('dataFiles/Desc.csv')
+        except:
+            raise('First you have to read a data')
     @property
     def Getting_plots(self):
-        pass
+        
+        print(self.data.iloc[:,2:])
+        plt.plot(self.data.iloc[:,2:])
+        plt.savefig('dataFiles/simple.png')
     
     @property
     def distribution(self):
-        pass
+        for i in self.data.columns:
+                print(i,self.data[i].dtype)
+            
     @property
     def Ouliers(self):
         pass
@@ -48,8 +64,9 @@ class Stats(object):
         
         
 if __name__=='__main__':
-    pass
-
+    G=Stats('class.csv')
+    G.Load_data()
+    G.Getting_plots
     
                  
             
