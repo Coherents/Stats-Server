@@ -7,8 +7,15 @@ import sys
 import argparse
 import seaborn as sns
 from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+from sklearn.utils import shuffle
 
-
+def validate_data(read:bool):
+        def inner(f:Function):
+                if read:
+                     return f
+                else:
+                    raise('First data has to be read')
+        return inner
 
 class Stats(object):
     def __init__(self,name,type="csv",req_sep=False):
@@ -34,21 +41,52 @@ class Stats(object):
                 self.data=pd.read_csv(self.name,engine="python")
         print(self.data)
         self.__read=True
+        self.__managing_cat
+        self.__managing_null
+    @property
+    def __managing_cat(self):
+            L=[]
+            for i in self.data.columns:
+                    if self.data[i].dtype=='object':
+                            L.append(i)
+            
+            for j in L:
+                lb=LabelEncoder()
+                self.data[j]=lb.fit_transform(self.data[j])
+    
+    @property
+    def __managing_null(self):
+            M={}
+            for k in self.data.columns:
+                    M[k]=self.data[k].isnull().sum()
+            print(M)
+            M=pd.DataFrame(M,index=[0,1])
+            M.to_csv('dataFiles/Null.csv') 
     @property
     def Getting_description(self):
         if not self.__read:
-                raise('You First have to read the data before analysis')
+                print('You first have to read the data')
+                sys.exit(1)
         self.temp=self.data.describe()
         try:
             self.temp.to_csv('dataFiles/Desc.csv')
         except:
             raise('First you have to read a data')
+    
+                
+                    
     @property
     def Getting_plots(self):
-        
-        print(self.data.iloc[:,2:])
-        plt.plot(self.data.iloc[:,2:])
+        if not self.__read:
+                    print('You first have to read the data')
+                    sys.exit(1)
+                    
+        print(self.data.iloc[:,1:])
+        plt.plot(self.data.iloc[:,1:])
         plt.savefig('dataFiles/simple.png')
+        plt.hist(self.data.iloc[:,2:])
+        plt.savefig('dataFiles/Hist.png')
+        
     
     @property
     def distribution(self):
