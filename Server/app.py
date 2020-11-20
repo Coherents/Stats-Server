@@ -6,7 +6,6 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import *
 import os
 import sqlite3
-import pymongo
 import sys
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime

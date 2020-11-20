@@ -1,0 +1,14 @@
+sklearn
+flask
+flask_wtf
+flask_login
+werkzeug
+flask_sqlalchemy
+argparse
+numpy
+pandas
+seaborn
+matplotlib
+statsmodels
+scipy
+wtforms
