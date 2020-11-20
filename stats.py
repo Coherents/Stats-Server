@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import os
 import sys
-import optparser
+import optparse
 import argparse
 import seaborn as sns
 from sklearn.preprocessing import LabelEncoder,OneHotEncoder
@@ -28,8 +28,8 @@ class Stats(object):
     
     
     def Load_data(self,head_included=False):
-        if 'dataFiles' not in os.listdir(os.getcwd()):
-            os.mkdir('dataFiles')
+        if 'dataFiles' not in os.listdir(os.path.join(os.getcwd(),'Server')):
+            os.mkdir('Server/dataFiles')
         if not head_included:
             if not self.sep:
                 self.data=pd.read_csv(self.name,engine="python")
@@ -59,10 +59,10 @@ class Stats(object):
     def __managing_null(self):
             M={}
             for k in self.data.columns:
-                    M[k]=self.data[k].isnull().sum()
+                    M[k]=[self.data[k].isnull().sum()]
             print(M)
-            M=pd.DataFrame(M,index=[0,1])
-            M.to_csv('dataFiles/Null.csv') 
+            temp=pd.DataFrame(M)
+            temp.to_csv('Server/dataFiles/Null.csv') 
     @property
     def Getting_description(self):
         if not self.__read:
@@ -70,7 +70,7 @@ class Stats(object):
                 sys.exit(1)
         self.temp=self.data.describe()
         try:
-            self.temp.to_csv('dataFiles/Desc.csv')
+            self.temp.to_csv('Server/dataFiles/Desc.csv')
         except:
             raise('First you have to read a data')
     
@@ -81,12 +81,24 @@ class Stats(object):
         if not self.__read:
                     print('You first have to read the data')
                     sys.exit(1)
+        Path='Server/dataFiles'
                     
         print(self.data.iloc[:,1:])
         plt.plot(self.data.iloc[:,1:])
-        plt.savefig('dataFiles/simple.png')
-        plt.hist(self.data.iloc[:,2:])
-        plt.savefig('dataFiles/Hist.png')
+        plt.savefig('Server/dataFiles/simple.png')
+        plt.hist(self.data.iloc[:,1:])
+        plt.savefig('Server/dataFiles/Hist.png')
+        sns.pairplot(self.data)
+        plt.savefig('Server/dataFiles/PairPLot_main.png')
+        for i in self.data.columns:
+                try:
+                    sns.pairplot(self.data,hue=i)
+                    plt.savefig(f'{Path}/PairPlot_on_{i}.png')
+                except:
+                    continue;
+        sns.heatmap(self.data.iloc[:,1:],fmt=".2f")
+        plt.savefig(f'{Path}/Heatmap.png')
+    
         
     
     @property
