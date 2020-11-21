@@ -21,6 +21,7 @@ from datetime import datetime
 import zipfile
 PATH=os.getcwd()
 sess={}
+IGNORE=[]
 sess['name']=None
 with open('req.txt','r') as file:
     auth=file.read()
@@ -48,6 +49,13 @@ class Account(db.Model,UserMixin):
 def validate(user):
         
         return Account.query.get(int(user))
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 @app.route('/<name>')
 @app.route('/')
@@ -132,8 +140,9 @@ def fancy(name=None):
 
 @app.route('/download',methods=["GET","POST"])
 def download():
-        G=Stats('tsla.csv')
-        G.Load_data()
+        IGNORE=['Symbol','Series']
+        G=Stats('GAIL.csv')
+        G.Load_data(IGNORE)
         G.Getting_plots
         G.distribution
         G.Outliers
@@ -162,4 +171,4 @@ def error1(error):
     return "<h1><center> Not Authorized</center></h1>"
 
 if __name__=='__main__':
-   app.run(debug=True,port=4000)
+   app.run(debug=True,port=3000)

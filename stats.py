@@ -19,7 +19,7 @@ import statsmodels.formula.api as smf
 import statsmodels.tsa.api as smt
 import statsmodels.api as sm
 import scipy.stats as scs
-
+import multiprocessing as mp
 
 
 # validating Read data
@@ -42,7 +42,7 @@ class Stats(object):
         self.__read:bool=False
     
     
-    def Load_data(self,head_included=False):
+    def Load_data(self,head_included=False,L=list()):
         if 'dataFiles' not in os.listdir(os.getcwd()):
             os.mkdir('dataFiles')
         if not head_included:
@@ -55,7 +55,8 @@ class Stats(object):
                 self.data=pd.read_csv(self.name,engine="python")
             else:
                 self.data=pd.read_csv(self.name,engine="python")
-        
+        for i in L:
+            self.data=self.data.drop([i],axis=1)
         self.__read=True
         self.__managing_cat
         self.__managing_null
@@ -122,13 +123,14 @@ class Stats(object):
                 ax3.legend(loc='best')
                 plt.savefig(f'dataFiles/Analysis/ID{c}.png')
                 c+=1
-        
+                plt.close()
                 
         print(self.data.iloc[:,1:])
         for i in self.data.columns:
                 fig=plt.figure(figsize=(12,12))
                 self.data[i].plot()
                 plt.savefig(f'dataFiles/{i}.png')
+                plt.close()
         plt.savefig('dataFiles/simple.jpg')
         if  "Histograms" not in os.listdir('dataFiles'):
                     os.mkdir('dataFiles/Histograms')
@@ -140,6 +142,7 @@ class Stats(object):
                 plt.title(i,size=14)
                 plt.savefig(f'dataFiles/Histograms/Histograms_{c}.jpg')
                 c+=1
+                plt.plot()
         sns.pairplot(self.data[1:])
         plt.savefig('dataFiles/PairPLot_main.png')
         
@@ -161,6 +164,7 @@ class Stats(object):
                 plt.title(k,size=17)
                 plt.savefig(f'dataFiles/Distribution/Distributionplot_{str(c)}.png')
                 c+=1
+                plt.plot()
         self.corr=self.data[1:].corr()
         sns.heatmap(self.corr)
         plt.savefig('dataFiles/Heatmap.png')
@@ -175,6 +179,7 @@ class Stats(object):
                 sns.boxplot(self.data[k])
                 plt.savefig(f'dataFiles/Outliers/box_{str(c)}.png')
                 c+=1
+                plt.plot()
     
     def Laura(self):
             plt.plot(self.data['Adj Close'])
@@ -185,8 +190,9 @@ class Stats(object):
         
         
 if __name__=='__main__':
-    G=Stats('tsla.csv')
-    G.Load_data()
+    
+    G=Stats('Server/CIPLA.csv')
+    G.Load_data(['Symbol','Series'])
     G.Getting_plots
     
                  

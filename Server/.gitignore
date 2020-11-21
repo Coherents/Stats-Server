@@ -1,3 +1,5 @@
 req.txt
-class.csv
-TSLA.csv
+*.csv
+*.sql
+*.zip
+*.tar
