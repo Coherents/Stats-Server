@@ -1,7 +1,10 @@
 # imports
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 from scipy import stats
 import os
 import sys
@@ -164,10 +167,31 @@ class Stats(object):
                 plt.title(k,size=17)
                 plt.savefig(f'dataFiles/Distribution/Distributionplot_{str(c)}.png')
                 c+=1
-                plt.plot()
+                plt.close()
         self.corr=self.data[1:].corr()
         sns.heatmap(self.corr)
         plt.savefig('dataFiles/Heatmap.png')
+        plt.close()
+        fig=plt.figure(figsize=(12,12))
+        if 'Seasonality_and_trend' not in os.listdir('dataFiles'):
+                os.mkdir('dataFiles/Seasonality_and_trend')
+        res = sm.tsa.seasonal_decompose(self.data['Volume'],period=12,model="multiplicative")
+        res.plot()
+        plt.title('Miltiplicative',size=17)
+        plt.savefig('dataFiles/Seasonality_and_trend/Multiplicative_trend.png')
+        fig=plt.figure(figsize=(12,12))
+        req= sm.tsa.seasonal_decompose(self.data['Volume'],period=12,model="additive")
+        req.plot()
+        plt.title('Additive',size=17)
+        plt.savefig('dataFiles/Seasonality_and_trend/Additive_trend.png')
+        #fuller test
+        temp= adfuller(self.data['Volume'], autolag='AIC')
+        out= pd.Series(temp[0:4], index=['Test Statistic','p-value','#Lags Used','Number of Observations Used'])
+        for key,value in temp[4].items():
+            out[f'Critical Value {key}']=value
+        out.to_csv('dataFiles/Seasonality_and_trend/Fuller_test.csv')
+        
+                    
             
     @property
     def Outliers(self):
@@ -175,11 +199,11 @@ class Stats(object):
             os.mkdir('dataFiles/Outliers')
         c=0
         for k in self.data.columns[1:]:
-                fig=plt.figure(c+1,figsize=(12,12))
+                fig=plt.figure(figsize=(12,12))
                 sns.boxplot(self.data[k])
                 plt.savefig(f'dataFiles/Outliers/box_{str(c)}.png')
                 c+=1
-                plt.plot()
+                plt.close()
     
     def Laura(self):
             plt.plot(self.data['Adj Close'])
@@ -193,7 +217,7 @@ if __name__=='__main__':
     
     G=Stats('Server/CIPLA.csv')
     G.Load_data(['Symbol','Series'])
-    G.Getting_plots
+    G.Outliers
     
                  
 #Date,Open,High,Low,Close,Adj Close,Volume
