@@ -12,3 +12,5 @@ matplotlib
 statsmodels
 scipy
 wtforms
+flask_migrate
+email_validator

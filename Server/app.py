@@ -8,7 +8,7 @@ import os
 import sqlite3
 import sys
 import inspect
-
+import multiprocessing as mp
 ########
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -143,10 +143,18 @@ def download():
         IGNORE=['Symbol','Series']
         G=Stats('GAIL.csv')
         G.Load_data(IGNORE)
-        G.Getting_plots
-        G.distribution
-        G.Outliers
-        G.Getting_description
+        P1=mp.Process(target=G.Getting_plots)
+        P2=mp.Process(target=G.distribution)
+        P3=mp.Process(target=G.Outliers)
+        P4=mp.Process(target=G.Getting_description)
+        P1.start()
+        P2.start()
+        P3.start()
+        P4.start()
+        P1.join()
+        P2.join()
+        P3.join()
+        P4.join()
         ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
         for r,d,f in os.walk('dataFiles/'):
                 for file in f:
