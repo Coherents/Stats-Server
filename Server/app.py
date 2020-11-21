@@ -6,9 +6,13 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import *
 import os
 import sqlite3
+from PIL import Image
+import cv2
+import base64
 import sys
 import inspect
 import multiprocessing as mp
+from werkzeug.utils import secure_filename
 ########
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -19,6 +23,12 @@ from stats import Stats
 from werkzeug.security import  generate_password_hash, check_password_hash
 from datetime import datetime
 import zipfile
+
+def Read_File():
+     with open(name,'w') as file:
+             file.write()
+
+
 PATH=os.getcwd()
 sess={}
 IGNORE=[]
@@ -133,9 +143,15 @@ def fancy(name=None):
                 Item=request.form["item"]
                 Des=request.form['desc']
                 Price=request.form['price']
-                Url=request.form['image']
-                L[name].append([Item,Des,Price,U])
-                print(L)
+                F=request.files['image']
+                file=secure_filename(F.filename)
+               
+                F.save(os.path.join(os.getcwd(),file))
+                
+                with open(file, "rb") as img_file:
+                        my_string = base64.b64encode(img_file.read())
+                print(my_string)
+                os.remove(file)
                 return redirect(url_for('commercial',List=L.keys(),D=L))
         else:
                 return redirect(url_for('index'))

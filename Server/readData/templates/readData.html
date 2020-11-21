@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+        <div class="row">
+                <div class="col-xs-12">
+                <form action="/hola" method="POST">
+                <lable> Category name</lable>
+                <input type="text" name="category_text">
+                <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>  
+        </div>
+        <br>
+        <hr>
+        <ul>
+                {% for list in List %}
+                        <li style="color:yellow">{{list}}</li>
+                        <h3> Items</h3>
+                        <ul>
+                        {% for ope in D[list] %}
+                                <li style="color:aqua"> {{ope}}</li>
+                        {% endfor %}
+                        </ul>
+                        <a class="btn btn-success" href="/yolo/{{list}}">Add Item</a>
+                {% endfor %}
+        </ul>
+</div>
+</div>
+{% endblock %}
