@@ -131,7 +131,10 @@ def yolo(name=None):
 def fancy(name=None):
         if name:
                 Item=request.form["item"]
-                L[name].append(Item)
+                Des=request.form['desc']
+                Price=request.form['price']
+                Url=request.form['image']
+                L[name].append([Item,Des,Price,U])
                 print(L)
                 return redirect(url_for('commercial',List=L.keys(),D=L))
         else:
