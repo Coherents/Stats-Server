@@ -33,6 +33,7 @@ PATH=os.getcwd()
 sess={}
 IGNORE=[]
 sess['name']=None
+sess['file']=None
 with open('req.txt','r') as file:
     auth=file.read()
 L={}
@@ -118,6 +119,8 @@ def login():
                     
 @app.route('/read')
 def commercial():
+    if sess['file']:
+        os.remove(sess['file'])
     return render_template('readData.html',List=L.keys(),D=L)
 @app.route('/hola',methods=["GET",'POST'])
 def post_route():
@@ -144,6 +147,7 @@ def fancy(name=None):
                 Des=request.form['desc']
                 Price=request.form['price']
                 F=request.files['image']
+                L[name].append([Item,Des,Price])
                 file=secure_filename(F.filename)
                
                 F.save(os.path.join(os.getcwd(),file))
@@ -151,7 +155,7 @@ def fancy(name=None):
                 with open(file, "rb") as img_file:
                         my_string = base64.b64encode(img_file.read())
                 print(my_string)
-                os.remove(file)
+                sess['file']=file
                 return redirect(url_for('commercial',List=L.keys(),D=L,path='/read'))
         else:
                 return redirect(url_for('index',path='/'))
@@ -180,7 +184,7 @@ def download():
                 P3.join()
                 P4.join()
                 
-                os.remove(file)
+                
                 ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
                 for r,d,f in os.walk('dataFiles/'):
                         for file in f:
@@ -188,6 +192,7 @@ def download():
                 ziph.close()
                         
                 return send_file('data.zip',as_attachment=True)
+                os.remove(file)
         else:
                 return render_template('download.html',path='/download');
                         

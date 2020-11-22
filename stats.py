@@ -64,6 +64,7 @@ class Stats(object):
                 self.data=self.data.drop([i],axis=1)
             except:
                 continue
+        self.data.drop(['Series'],axis=1)
         self.__read=True
         self.__managing_cat
         self.__managing_null
@@ -92,7 +93,7 @@ class Stats(object):
             temp=pd.DataFrame(M)
             temp.to_csv('dataFiles/Null.csv') 
             print(self.data)
-    @property
+    
     def Getting_description(self):
         if not self.__read:
                 print('You first have to read the data')
@@ -105,7 +106,7 @@ class Stats(object):
     
                 
                     
-    @property
+    
     def Getting_plots(self,roll_av_value=100):
         if not self.__read:
                     print('You first have to read the data')
@@ -158,7 +159,7 @@ class Stats(object):
     
         
     
-    @property
+    
     def distribution(self,histo=True,rug=False):
         # distplots
         
@@ -197,7 +198,7 @@ class Stats(object):
         
                     
             
-    @property
+    
     def Outliers(self):
         if 'Outliers' not in os.listdir('dataFiles'):
             os.mkdir('dataFiles/Outliers')
