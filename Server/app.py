@@ -73,9 +73,9 @@ def add_header(r):
 def index(name=None):
     
     if name!=None:
-            return render_template('index.html',name=name) 
+            return render_template('index.html',name=name,path='/') 
     else:
-            return render_template('index.html',name=sess['name'])
+            return render_template('index.html',name=sess['name'],path='/')
    
         
 
@@ -93,7 +93,7 @@ def register():
 		db.session.add(users)
 		db.session.commit()
 		return redirect (url_for("login"))
-	return render_template("register.html",form=form)
+	return render_template("register.html",form=form,path='/register')
 @app.route("/login",methods=["GET","POST"])
 def login():
     if  current_user.is_authenticated:
@@ -111,8 +111,8 @@ def login():
                     return redirect(url_for('register'))
             login_user(D,remember=form.remember_me.data)
             sess['name']=n
-            return redirect(url_for('index',name=sess['name']))
-    return render_template('login.html',form=form)
+            return redirect(url_for('index',name=sess['name']),path='/login')
+    return render_template('login.html',form=form,path='/login')
     #return render_template('login.html',form=form)
 
                     
@@ -127,15 +127,15 @@ def post_route():
     
      print(L)
      print(data)
-     return render_template('readData.html',List=L.keys(),D=L)
+     return render_template('readData.html',List=L.keys(),D=L,path='/read')
 
 
 @app.route('/yolo/<name>')
 def yolo(name=None):
         if name:
-                return render_template('yolo.html',name=name)
+                return render_template('yolo.html',name=name,path='/')
         else:
-                return redirect(url_for('index'))
+                return redirect(url_for('index',path='/'))
 
 @app.route('/qwert/<name>',methods=["GET","POST"])
 def fancy(name=None):
@@ -152,9 +152,9 @@ def fancy(name=None):
                         my_string = base64.b64encode(img_file.read())
                 print(my_string)
                 os.remove(file)
-                return redirect(url_for('commercial',List=L.keys(),D=L))
+                return redirect(url_for('commercial',List=L.keys(),D=L,path='/read'))
         else:
-                return redirect(url_for('index'))
+                return redirect(url_for('index',path='/'))
                     
 
 @app.route('/download',methods=["GET","POST"])
@@ -166,6 +166,7 @@ def download():
                 g.save(os.path.join(os.getcwd(),file))
                 G=Stats(file)
                 G.Load_data(IGNORE)
+                
                 P1=mp.Process(target=G.Getting_plots)
                 P2=mp.Process(target=G.distribution)
                 P3=mp.Process(target=G.Outliers)
@@ -178,6 +179,8 @@ def download():
                 P2.join()
                 P3.join()
                 P4.join()
+                
+                os.remove(file)
                 ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
                 for r,d,f in os.walk('dataFiles/'):
                         for file in f:
@@ -186,7 +189,7 @@ def download():
                         
                 return send_file('data.zip',as_attachment=True)
         else:
-                return render_template('download.html');
+                return render_template('download.html',path='/download');
                         
                 
                
@@ -196,12 +199,12 @@ def download():
 def logout():
 	logout_user()
 	sess['name']=None
-	return redirect(url_for("login"))
+	return redirect(url_for("login",path='/login'))
 
 
 @app.errorhandler(401)
 def error1(error):
-    return "<h1><center> Not Authorized</center></h1>"
+    return "<h1><center> You are not Authorized</center></h1>"
 
 if __name__=='__main__':
-   app.run(debug=True,port=3000)
+   app.run(debug=True,port=8000)
