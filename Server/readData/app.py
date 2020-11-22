@@ -42,10 +42,13 @@ def yolo(name=None):
 @app.route('/qwert/<name>',methods=["GET","POST"])
 def fancy(name=None):
         if name:
+                ## Form data
                 Item=request.form["item"]
                 Des=request.form['desc']
                 Price=request.form['price']
                 F=request.files['image']
+                ## /form data
+                L[name].append([Item,Des,Price])
                 file=secure_filename(F.filename)
                
                 F.save(os.path.join(os.getcwd(),file))
