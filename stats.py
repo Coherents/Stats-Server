@@ -58,8 +58,12 @@ class Stats(object):
                 self.data=pd.read_csv(self.name,engine="python")
             else:
                 self.data=pd.read_csv(self.name,engine="python")
+        
         for i in L:
-            self.data=self.data.drop([i],axis=1)
+            try:
+                self.data=self.data.drop([i],axis=1)
+            except:
+                continue
         self.__read=True
         self.__managing_cat
         self.__managing_null

@@ -159,28 +159,34 @@ def fancy(name=None):
 
 @app.route('/download',methods=["GET","POST"])
 def download():
-        IGNORE=['Symbol','Series']
-        G=Stats('GAIL.csv')
-        G.Load_data(IGNORE)
-        P1=mp.Process(target=G.Getting_plots)
-        P2=mp.Process(target=G.distribution)
-        P3=mp.Process(target=G.Outliers)
-        P4=mp.Process(target=G.Getting_description)
-        P1.start()
-        P2.start()
-        P3.start()
-        P4.start()
-        P1.join()
-        P2.join()
-        P3.join()
-        P4.join()
-        ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
-        for r,d,f in os.walk('dataFiles/'):
-                for file in f:
-                        ziph.write(os.path.join(r,file))
-        ziph.close()
-                
-        return send_file('data.zip',as_attachment=True)
+        if request.method=="POST":
+                IGNORE=['Symbol','Series']
+                g=request.files['File']
+                file=secure_filename(g.filename)
+                g.save(os.path.join(os.getcwd(),file))
+                G=Stats(file)
+                G.Load_data(IGNORE)
+                P1=mp.Process(target=G.Getting_plots)
+                P2=mp.Process(target=G.distribution)
+                P3=mp.Process(target=G.Outliers)
+                P4=mp.Process(target=G.Getting_description)
+                P1.start()
+                P2.start()
+                P3.start()
+                P4.start()
+                P1.join()
+                P2.join()
+                P3.join()
+                P4.join()
+                ziph=zipfile.ZipFile('data.zip','w',zipfile.ZIP_DEFLATED)
+                for r,d,f in os.walk('dataFiles/'):
+                        for file in f:
+                                ziph.write(os.path.join(r,file))
+                ziph.close()
+                        
+                return send_file('data.zip',as_attachment=True)
+        else:
+                return render_template('download.html');
                         
                 
                
