@@ -10,3 +10,15 @@
         font-size: 35px;
         color:crimpson;
 }
+.res{
+        color:orange;
+        font-size: 16px;
+        font-weight: 300px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.uty{
+        color:darkslategray;
+        font-size:13px;
+        font-weight:800px;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}

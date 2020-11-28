@@ -107,7 +107,7 @@ def login():
                     if not check_password_hash(D.password,form.password.data):
                             data=False
                             sess["Email"]=form.email.data
-                            return redirect('index',user=sess['Email'])
+                            return redirect('index',name=sess['Email'])
             else:
                     return redirect(url_for('register'))
             login_user(D,remember=form.remember_me.data)
@@ -122,7 +122,8 @@ def commercial():
     if sess['file']:
         pass
         #os.remove(sess['file'])
-    return render_template('readData.html',List=L.keys(),D=L)
+    
+    return render_template('readData.html',List=L.keys(),D=L,enumerate=enumerate)
 @app.route('/hola',methods=["GET",'POST'])
 def post_route():
      data=request.form["category_text"]
@@ -131,7 +132,7 @@ def post_route():
     
      print(L)
      print(data)
-     return render_template('readData.html',List=L.keys(),D=L,path='/read')
+     return render_template('readData.html',List=L.keys(),D=L,enumerate=enumerate)
 
 
 @app.route('/yolo/<name>')

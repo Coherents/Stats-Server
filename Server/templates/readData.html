@@ -11,18 +11,19 @@
                         </div>
                         </form>
                         <div class="scroll-area">
-                        <ol class='list-group list-group-flush'>
-                                {% for list in List %}
-                                        <li style="color:dodgerblue; font-size:21px;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;position:relative;right:80px">{{list}}</li>
-                                        <h4 class='items' style="position:relative;right:80px"> Items</h4>
-                                        <div style="border-color:azure;border-width:5px;border-style:solid;position:relative;right:80px">
+                        <ul class='list-group list-group-flush' style="list-style-type: none;">
+                                {% for i,j in enumerate(List)  %}
+                                        <li style="color:rgb(0, 255, 42); font-size:21px;font-weight:900px;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;position:relative;right:120px;">{{i+1}}.{{j}}</li>
+                                        <h4 class='items' style="position:relative;right:120px;"> Items</h4>
+                                        <div id="lp" style="border-color:rgb(20, 36, 36);border-width:2px;border-style:solid;overflow:scroll; height:100px;">
                                         
                                         <ol class='list-group'>
-                                        {% for ope in D[list] %}
+                                        {% for ope in D[j] %}
+                                        
                                         <div>
                 
                                               <button type="button" style="color:rgb(0, 251, 255);font-weight:900;"  class='btn bg-transparent' data-toggle="modal" data-target="#exampleModal">
-                                                         {{ope[0]}}
+                                                         {{ope[0]}}<button class="btn btn-danger">Delete Item</button><br>
                                                 </button><br>
 
                                                 <!-- Modal -->
@@ -30,15 +31,15 @@
                                                 <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                 <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                        <h4 class="modal-title" id="exampleModalLabel" style="color:green">Item {{ope[0]}}</h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                         </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                        Description : {{ope[1]}}
-                                                        Item Name: {{ope[0]}}
-                                                        Price : {{ope[2]}}
+                                                        <p class="res">Item Name :</p><span class="uty">{{ope[0]}}</span><br>
+                                                        <p class="res">Description :</p><span class="uty">{{ope[1]}}</span><br>
+                                                        <p class="res">Price:</p><span class="uty">{{ope[2]}}</span><br>
                                                 </div>
                                                 <div class="modal-footer">
                                                         
@@ -51,11 +52,11 @@
                                                 
                                         {% endfor %}
                                         </ol>
-                                        <a class="btn btn-success" href="/yolo/{{list}}">Add Item</a>
-                                        <a class='btn btn-danger' href='#'> Delete Item</a>
+                                        <a class="btn btn-success" href="/yolo/{{j}}">Add Item</a>
+                                        
                                 </div>
                                 {% endfor %}
-                        </ol>
+                        </ul>
                 </div>  
                         </div>
                 </div>
