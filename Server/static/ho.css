@@ -1,0 +1,12 @@
+.con{
+        text-align: center;
+        position:relative;
+        top:200px;
+        left:300px;
+
+}
+.cat{
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: 35px;
+        color:crimpson;
+}

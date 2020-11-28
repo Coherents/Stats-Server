@@ -120,7 +120,8 @@ def login():
 @app.route('/read')
 def commercial():
     if sess['file']:
-        os.remove(sess['file'])
+        pass
+        #os.remove(sess['file'])
     return render_template('readData.html',List=L.keys(),D=L)
 @app.route('/hola',methods=["GET",'POST'])
 def post_route():
@@ -154,7 +155,7 @@ def fancy(name=None):
                 
                 with open(file, "rb") as img_file:
                         my_string = base64.b64encode(img_file.read())
-                print(my_string)
+                #print(my_string)
                 sess['file']=file
                 return redirect(url_for('commercial',List=L.keys(),D=L,path='/read'))
         else:
